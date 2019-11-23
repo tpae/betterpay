@@ -24,6 +24,8 @@ function App() {
   const [role, setRole] = useState('buyer');
   const ipfs = getIPFS();
 
+  console.log(context.networkId, BetterPayJSON.networks);
+
   useEffect(() => {
     const bootstrap = async () => {
       const deployedNetwork = BetterPayJSON.networks[context.networkId];
@@ -34,7 +36,7 @@ function App() {
       ));
     }
     bootstrap();
-  }, [context.networkId]);
+  }, [context.networkId, BetterPayJSON.networks]);
 
   const onSubmit = async (data) => {
     setLoading(true);
