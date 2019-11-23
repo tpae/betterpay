@@ -1,7 +1,11 @@
-import React, { useEffect } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom';
 import { useWeb3Injected } from '@openzeppelin/network/react';
-import Web3Info from './components/Web3Info/index.js';
+import BetterPay from './components/BetterPay';
 import getIPFS from './utils/ipfs';
 
 import styles from './App.module.scss';
@@ -9,24 +13,37 @@ import styles from './App.module.scss';
 const BetterPayJSON = require('../../contracts/BetterPay.sol');
 
 function App() {
-  const injected = useWeb3Injected();
+  const context = useWeb3Injected();
+  const [contract, setContract] = useState(null);
   const ipfs = getIPFS();
 
-  console.log(BetterPayJSON);
+  useEffect(() => {
+    const bootstrap = async () => {
+      const deployedNetwork = BetterPayJSON.networks[context.networkId];
+      setContract(new context.lib.eth.Contract(
+        BetterPayJSON.abi,
+        deployedNetwork && deployedNetwork.address,
+      ));
+    }
+    bootstrap();
+  }, [context]);
 
-  // useEffect(() => {
-  //   (async function f() {
-  //     const hash = await ipfs.add('foo');
-  //     console.log('hash', hash);
-
-  //     const data = await ipfs.get(hash);
-  //     console.log('data', data);
-  //   })();
-  // }, []);
+  if (!context.lib) {
+    return <div>Loading Web3, accounts, and contract...</div>;
+  }
 
   return (
     <div className={styles.App}>
-      <Web3Info title="Injected Web3" web3Context={injected} />
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <BetterPay />
+          </Route>
+          <Route path="/view/:hash">
+            <h3>View</h3>
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 }
