@@ -5,8 +5,10 @@ import {
   Route,
 } from 'react-router-dom';
 import { useWeb3Injected } from '@openzeppelin/network/react';
+import { Dialog } from 'evergreen-ui';
 import HeaderNav from './components/HeaderNav';
 import Home from './components/Home';
+import CreateForm from './components/CreateForm';
 import getIPFS from './utils/ipfs';
 
 import styles from './App.module.scss';
@@ -15,7 +17,9 @@ const BetterPayJSON = require('../../contracts/BetterPay.sol');
 
 function App() {
   const context = useWeb3Injected();
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [contract, setContract] = useState(null);
+  const [role, setRole] = useState('buyer');
   const ipfs = getIPFS();
 
   useEffect(() => {
@@ -29,6 +33,15 @@ function App() {
     bootstrap();
   }, [context]);
 
+  const onSubmit = (data) => {
+    console.log(data);
+  }
+
+  const onCTAClick = (role) => () => {
+    setRole(role);
+    setShowCreateForm(true);
+  }
+
   if (!context.lib) {
     return <div>Loading Web3, accounts, and contract...</div>;
   }
@@ -36,10 +49,17 @@ function App() {
   return (
     <div className={styles.App}>
       <HeaderNav web3Context={context} />
+      <CreateForm
+        show={showCreateForm}
+        role={role}
+        onRoleChange={setRole}
+        onClose={() => setShowCreateForm(false)}
+        onSubmit={onSubmit}
+      />
       <Router>
         <Switch>
           <Route exact path="/">
-            <Home />
+            <Home onBuyer={onCTAClick('buyer')} onSeller={onCTAClick('seller')} />
           </Route>
           <Route path="/view/:hash">
             <h3>View</h3>

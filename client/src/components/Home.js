@@ -7,12 +7,12 @@ export default function Home(props) {
       <h1>I want to securely</h1>
       <Flex flexDirection="row">
         <Flex flexDirection="column">
-          <Button size="large" px={50}>Buy</Button>
+          <Button size="large" px={50} onClick={props.onBuyer}>Buy</Button>
           <Text textAlign="center" italic>Pay</Text>
         </Flex>
         <Box width={50} />
         <Flex flexDirection="column">
-          <Button size="large" px={50}>Sell</Button>
+          <Button size="large" px={50} onClick={props.onSeller}>Sell</Button>
           <Text textAlign="center" italic>Request Payment</Text>
         </Flex>
       </Flex>
