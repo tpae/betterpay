@@ -3,7 +3,7 @@ const mnemonic = process.env.MNEMONIC;
 const path = require("path");
 const HDWalletProvider = require("truffle-hdwallet-provider");
 // Create your own key for Production environments (https://infura.io/)
-const INFURA_ID = process.env.INFURA_ID || 'd6760e62b67f4937ba1ea2691046f06d';
+const INFURA_ID = process.env.INFURA_ID || 'e34c32bc829b495b8c286a346992214e';
 
 
 const configNetwork = (network, networkId, path = "m/44'/60'/0'/0/", gas = 4465030, gasPrice = 1e10) => ({
