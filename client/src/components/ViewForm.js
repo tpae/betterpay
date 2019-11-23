@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Flex, Text, Form, Textarea, Button, Loader } from 'rimble-ui';
+import { Flex, Field, Card, Heading, Input, Table } from 'rimble-ui';
 import { useParams } from 'react-router-dom';
 import ProgressStep from './ProgressStep';
 
@@ -51,12 +51,39 @@ export default function ViewForm(props) {
     return <div>Loading...</div>;
   }
 
-  console.log(manifest, escrow);
-
   return (
     <Flex flexDirection="column" padding={25} marginTop={75} alignItems="center" width="100%">
-      <h1>{manifest.title}</h1>
       <ProgressStep steps={steps} />
+      <Card width={800} marginTop={50}>
+        <Heading>You are the Seller</Heading>
+        <Flex height={25} />
+        <Field label="Copy Offer Link for Buyer" width={1}>
+          <Input type="text" value={window.location.href} required readonly />
+        </Field>
+        <Flex height={25} />
+        <Table>
+          <thead>
+            <tr>
+              <th>Offer Terms</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Title</b></td>
+              <td>{manifest.title}</td>
+            </tr>
+            <tr>
+              <td><b>Description</b></td>
+              <td>{manifest.description}</td>
+            </tr>
+            <tr>
+              <td><b>Price</b></td>
+              <td>{manifest.price} ETH</td>
+            </tr>
+          </tbody>
+        </Table>
+      </Card>
     </Flex>
   );
 }
