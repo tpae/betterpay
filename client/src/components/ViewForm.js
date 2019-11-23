@@ -1,32 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { Flex, Field, Card, Heading, Input, Table } from 'rimble-ui';
+import { Flex } from 'rimble-ui';
 import { useParams } from 'react-router-dom';
 import ProgressStep from './ProgressStep';
+import SellerView from './SellerView';
+import BuyerView from './BuyerView';
+
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 const BetterPayJSON = require('../../../contracts/BetterPay.sol');
 
 const getSteps = (escrow) => [
   {
     label: 'Offer Created',
+    status: 'OfferCreated',
     completed: true,
   },
   {
     label: 'Payment Confirmed',
+    status: 'PaymentConfirmed',
     completed: parseInt(escrow.balance) === parseInt(escrow.targetAmount),
   },
   {
     label: 'Seller Confirmed',
+    status: 'SellerConfirmed',
     completed: escrow.sellerConfirmed,
   },
   {
     label:'Buyer Confirmed',
+    status: 'BuyerConfirmed',
     completed: escrow.buyerConfirmed,
   },
   {
     label: 'Offer Finalized',
+    status: 'OfferFinalized',
     completed: escrow.finalized,
   }
 ];
+
+const getStatus = (steps) => {
+  const latest = steps.findIndex(step => !step.completed);
+  return steps[latest-1].status;
+};
 
 export default function ViewForm(props) {
   const { ipfs, web3Context } = props;
@@ -34,6 +48,11 @@ export default function ViewForm(props) {
   const [manifest, setManifest] = useState(null);
   const [escrow, setEscrow] = useState(null);
   const steps = escrow ? getSteps(escrow) : [];
+  const status = escrow ? getStatus(steps) : null;
+  const isSeller = escrow ? escrow.seller === web3Context.accounts[0] : false;
+  const isBuyer = escrow
+    ? (escrow.buyer === web3Context.accounts[0] || !isSeller && escrow.buyer === NULL_ADDRESS)
+    : false;
 
   useEffect(() => {
     const getManifest = async () => {
@@ -55,38 +74,16 @@ export default function ViewForm(props) {
   console.log(escrow);
 
   return (
-    <Flex flexDirection="column" padding={25} marginTop={75} alignItems="center" width="100%">
+    <Flex
+      flexDirection="column"
+      padding={25}
+      marginTop={75}
+      alignItems="center"
+      width="100%"
+    >
       <ProgressStep steps={steps} />
-      <Card width={800} marginTop={50}>
-        <Heading>You are the Seller</Heading>
-        <Flex height={25} />
-        <Field label="Copy Offer Link for Buyer" width={1}>
-          <Input type="text" value={window.location.href} required readOnly />
-        </Field>
-        <Flex height={25} />
-        <Table>
-          <thead>
-            <tr>
-              <th>Offer Terms</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><b>Title</b></td>
-              <td>{manifest.title}</td>
-            </tr>
-            <tr>
-              <td><b>Description</b></td>
-              <td>{manifest.description}</td>
-            </tr>
-            <tr>
-              <td><b>Price</b></td>
-              <td>{manifest.price} ETH</td>
-            </tr>
-          </tbody>
-        </Table>
-      </Card>
+      {isSeller && <SellerView status={status} manifest={manifest} />}
+      {isBuyer && <BuyerView status={status} manifest={manifest} />}
     </Flex>
   );
 }
