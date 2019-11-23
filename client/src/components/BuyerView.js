@@ -2,7 +2,7 @@ import React from 'react';
 import { Flex, Field, Card, Heading, Input, Table, Button, Loader } from 'rimble-ui';
 
 export default function BuyerView(props) {
-  const { manifest, status, loading, onSendPayment } = props;
+  const { manifest, status, loading, onSendPayment, onBuyerConfirm } = props;
   console.log(status);
   return (
     <Card width={800} marginTop={50}>
@@ -14,6 +14,13 @@ export default function BuyerView(props) {
       {status === 'OfferCreated' && (
         <Button disabled={loading} type="submit" width={1} onClick={onSendPayment}>
           {!loading ? "Send Payment" : (
+            <Loader color="white" />
+          )}
+        </Button>
+      )}
+      {status === 'SellerConfirmed' && (
+        <Button disabled={loading} type="submit" width={1} onClick={onBuyerConfirm}>
+          {!loading ? "Confirm Receipt" : (
             <Loader color="white" />
           )}
         </Button>

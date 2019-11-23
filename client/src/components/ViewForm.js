@@ -39,7 +39,7 @@ const getSteps = (escrow) => [
 
 const getStatus = (steps) => {
   const latest = steps.findIndex(step => !step.completed);
-  return steps[latest-1].status;
+  return latest > -1 ? steps[latest-1].status : 'OfferFinalized';
 };
 
 export default function ViewForm(props) {
@@ -74,12 +74,32 @@ export default function ViewForm(props) {
     return <div>Loading...</div>;
   }
 
-  const onSellerConfirm = () => {
-
+  const onSellerConfirm = async () => {
+    setLoading(true);
+    const digestData = {
+      ...manifest,
+      timestamp: Math.round((new Date()).getTime() / 1000)
+    };
+    const digest = await ipfs.add(digestData);
+    await contract.methods.confirmSeller(hash, digest).send(
+      { from: web3Context.accounts[0] }
+    );
+    alert('Success!');
+    setLoading(false);
   };
 
-  const onBuyerConfirm = () => {
-
+  const onBuyerConfirm = async () => {
+    setLoading(true);
+    const digestData = {
+      ...manifest,
+      timestamp: Math.round((new Date()).getTime() / 1000)
+    };
+    const digest = await ipfs.add(digestData);
+    await contract.methods.confirmBuyer(hash, digest).send(
+      { from: web3Context.accounts[0] }
+    );
+    alert('Success!');
+    setLoading(false);
   };
 
   const onSendPayment = async () => {
@@ -91,6 +111,20 @@ export default function ViewForm(props) {
     const digest = await ipfs.add(digestData);
     await contract.methods.makePayment(hash, digest).send(
       { from: web3Context.accounts[0], value: web3Context.lib.utils.toWei(manifest.price, "ether") }
+    );
+    alert('Success!');
+    setLoading(false);
+  };
+
+  const onDisburse = async () => {
+    setLoading(true);
+    const digestData = {
+      ...manifest,
+      timestamp: Math.round((new Date()).getTime() / 1000)
+    };
+    const digest = await ipfs.add(digestData);
+    await contract.methods.disbursePayment(hash, digest).send(
+      { from: web3Context.accounts[0] }
     );
     alert('Success!');
     setLoading(false);
@@ -110,6 +144,7 @@ export default function ViewForm(props) {
           status={status}
           manifest={manifest}
           onSellerConfirm={onSellerConfirm}
+          onDisburse={onDisburse}
           loading={loading}
         />
       )}
