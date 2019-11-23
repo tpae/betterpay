@@ -84,7 +84,7 @@ export default function ViewForm(props) {
     await contract.methods.confirmSeller(hash, digest).send(
       { from: web3Context.accounts[0] }
     );
-    alert('Success!');
+    document.location.reload(true);
     setLoading(false);
   };
 
@@ -98,7 +98,7 @@ export default function ViewForm(props) {
     await contract.methods.confirmBuyer(hash, digest).send(
       { from: web3Context.accounts[0] }
     );
-    alert('Success!');
+    document.location.reload(true);
     setLoading(false);
   };
 
@@ -112,7 +112,7 @@ export default function ViewForm(props) {
     await contract.methods.makePayment(hash, digest).send(
       { from: web3Context.accounts[0], value: web3Context.lib.utils.toWei(manifest.price, "ether") }
     );
-    alert('Success!');
+    document.location.reload(true);
     setLoading(false);
   };
 
@@ -126,7 +126,7 @@ export default function ViewForm(props) {
     await contract.methods.disbursePayment(hash, digest).send(
       { from: web3Context.accounts[0] }
     );
-    alert('Success!');
+    document.location.reload(true);
     setLoading(false);
   };
 

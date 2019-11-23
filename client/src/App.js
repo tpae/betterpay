@@ -27,6 +27,7 @@ function App() {
   useEffect(() => {
     const bootstrap = async () => {
       const deployedNetwork = BetterPayJSON.networks[context.networkId];
+      console.log(deployedNetwork);
       setContract(new context.lib.eth.Contract(
         BetterPayJSON.abi,
         deployedNetwork && deployedNetwork.address,
@@ -41,6 +42,7 @@ function App() {
       ...data,
       buyer: role === 'buyer' ? context.accounts[0] : NULL_ADDRESS,
       seller: role === 'seller' ? context.accounts[0] : NULL_ADDRESS,
+      timestamp: Math.round((new Date()).getTime() / 1000)
     };
     try {
       const manifest = await ipfs.add(manifestData);
@@ -51,8 +53,7 @@ function App() {
         manifest,
         manifest,
       ).send({ from: context.accounts[0] });
-      console.log(manifest);
-      alert("Success! " + manifest);
+      window.location.replace(`/b/${manifest}`);
       setLoading(false);
     } catch (e) {
       console.log(e);

@@ -3,7 +3,6 @@ import { Flex, Field, Card, Heading, Input, Table, Button, Loader } from 'rimble
 
 export default function SellerView(props) {
   const { manifest, status, loading, onSellerConfirm, onDisburse } = props;
-  console.log(status);
   return (
     <Card width={800} marginTop={50}>
       <Heading>You are the Seller</Heading>
