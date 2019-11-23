@@ -12,6 +12,7 @@ import getIPFS from './utils/ipfs';
 
 import styles from './App.module.scss';
 
+const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 const BetterPayJSON = require('../../contracts/BetterPay.sol');
 
 function App() {
@@ -31,11 +32,32 @@ function App() {
       ));
     }
     bootstrap();
-  }, [context]);
+  }, [context.networkId]);
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
     setLoading(true);
+    const manifestData = {
+      ...data,
+      buyer: role === 'buyer' ? context.accounts[0] : NULL_ADDRESS,
+      seller: role === 'seller' ? context.accounts[0] : NULL_ADDRESS,
+    };
+    try {
+      const manifest = await ipfs.add(manifestData);
+      await contract.methods.startEscrow(
+        manifestData.buyer,
+        manifestData.seller,
+        context.lib.utils.toWei(manifestData.price, "ether"),
+        manifest,
+        manifest,
+      ).send({ from: context.accounts[0] });
+      console.log(manifest);
+      alert("Success! " + manifest);
+      setLoading(false);
+    } catch (e) {
+      console.log(e);
+      alert(e.message);
+      setLoading(false);
+    }
   }
 
   const onCTAClick = (role) => () => {
