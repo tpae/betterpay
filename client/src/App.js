@@ -1,35 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-import { useWeb3Injected, useWeb3Network } from '@openzeppelin/network/react';
+import { useWeb3Injected } from '@openzeppelin/network/react';
 import Web3Info from './components/Web3Info/index.js';
+import getIPFS from './utils/ipfs';
 
 import styles from './App.module.scss';
 
-const infuraToken = '95202223388e49f48b423ea50a70e336';
+const BetterPayJSON = require('../../contracts/BetterPay.sol');
 
 function App() {
   const injected = useWeb3Injected();
-  const local = useWeb3Network('http://127.0.0.1:8545');
-  let network;
-  network = useWeb3Network(`wss://ropsten.infura.io/ws/v3/${infuraToken}`, {
-    pollInterval: 10 * 1000,
-  });
+  const ipfs = getIPFS();
+
+  console.log(BetterPayJSON);
+
+  // useEffect(() => {
+  //   (async function f() {
+  //     const hash = await ipfs.add('foo');
+  //     console.log('hash', hash);
+
+  //     const data = await ipfs.get(hash);
+  //     console.log('data', data);
+  //   })();
+  // }, []);
 
   return (
     <div className={styles.App}>
-      <br />
-      <h1>BUIDL with Starter Kit</h1>
       <Web3Info title="Injected Web3" web3Context={injected} />
-      <br />
-      <Web3Info title="Local Web3 Node" web3Context={local} />
-      {infuraToken ? (
-        <React.Fragment>
-          <br />
-          <Web3Info title="Infura Web3" web3Context={network} />
-        </React.Fragment>
-      ) : (
-        <React.Fragment></React.Fragment>
-      )}
     </div>
   );
 }
