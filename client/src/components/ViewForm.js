@@ -5,34 +5,35 @@ import ProgressStep from './ProgressStep';
 
 const BetterPayJSON = require('../../../contracts/BetterPay.sol');
 
-const steps = [
+const getSteps = (escrow) => [
   {
     label: 'Offer Created',
     completed: true,
   },
   {
     label: 'Payment Confirmed',
-    completed: true
+    completed: parseInt(escrow.balance) === parseInt(escrow.targetAmount),
   },
   {
     label: 'Seller Confirmed',
-    completed: false
+    completed: escrow.sellerConfirmed,
   },
   {
     label:'Buyer Confirmed',
-    completed: false
+    completed: escrow.buyerConfirmed,
   },
   {
     label: 'Offer Finalized',
-    completed: false
+    completed: escrow.finalized,
   }
-]
+];
 
 export default function ViewForm(props) {
   const { ipfs, web3Context } = props;
   const { hash } = useParams();
   const [manifest, setManifest] = useState(null);
   const [escrow, setEscrow] = useState(null);
+  const steps = escrow ? getSteps(escrow) : [];
 
   useEffect(() => {
     const getManifest = async () => {
@@ -51,6 +52,8 @@ export default function ViewForm(props) {
     return <div>Loading...</div>;
   }
 
+  console.log(escrow);
+
   return (
     <Flex flexDirection="column" padding={25} marginTop={75} alignItems="center" width="100%">
       <ProgressStep steps={steps} />
@@ -58,7 +61,7 @@ export default function ViewForm(props) {
         <Heading>You are the Seller</Heading>
         <Flex height={25} />
         <Field label="Copy Offer Link for Buyer" width={1}>
-          <Input type="text" value={window.location.href} required readonly />
+          <Input type="text" value={window.location.href} required readOnly />
         </Field>
         <Flex height={25} />
         <Table>
