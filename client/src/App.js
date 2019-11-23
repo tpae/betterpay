@@ -8,11 +8,12 @@ import { useWeb3Injected } from '@openzeppelin/network/react';
 import HeaderNav from './components/HeaderNav';
 import Home from './components/Home';
 import CreateForm from './components/CreateForm';
+import ViewForm from './components/ViewForm';
 import getIPFS from './utils/ipfs';
 
 import styles from './App.module.scss';
 
-const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+const NULL_ADDRESS = '0x0000000000000000000000000000000000000000';
 const BetterPayJSON = require('../../contracts/BetterPay.sol');
 
 function App() {
@@ -88,8 +89,8 @@ function App() {
               onSeller={onCTAClick('seller')}
             />
           </Route>
-          <Route path="/view/:hash">
-            <h3>View</h3>
+          <Route path="/b/:hash">
+            <ViewForm />
           </Route>
         </Switch>
       </Router>
