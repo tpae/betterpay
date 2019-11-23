@@ -1,11 +1,11 @@
 import React from 'react';
-import { Text, Form, Textarea, Button } from 'rimble-ui';
+import { Text, Form, Textarea, Button, Loader } from 'rimble-ui';
 import { RadioGroup, Dialog } from 'evergreen-ui';
 import useForm from 'react-hook-form';
 
 const messages = {
-  buyer: {
-    pattern: 'This is an invalid address.'
+  title: {
+    required: 'Title is required',
   },
   amount: {
     pattern: 'This is not a valid amount.'
@@ -18,8 +18,7 @@ const ErrorMessage = ({ errors, name }) => {
 };
 
 export default function CreateForm(props) {
-  const { onSubmit, show, onClose, onRoleChange } = props;
-  const role = props.role || 'buyer';
+  const { onSubmit, show, loading, onClose, role, onRoleChange } = props;
   const { register, handleSubmit, errors } = useForm();
 
   return (
@@ -71,8 +70,10 @@ export default function CreateForm(props) {
           />
           <ErrorMessage errors={errors} name="price" />
         </Form.Field>
-        <Button type="submit" width={1}>
-          Confirm
+        <Button disabled={loading} type="submit" width={1}>
+          {!loading ? "Confirm" : (
+            <Loader color="white" />
+          )}
         </Button>
       </Form>
     </Dialog>

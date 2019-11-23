@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Flex, Text, Button, Box } from 'rimble-ui';
 
 export default function Home(props) {

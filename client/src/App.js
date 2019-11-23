@@ -5,7 +5,6 @@ import {
   Route,
 } from 'react-router-dom';
 import { useWeb3Injected } from '@openzeppelin/network/react';
-import { Dialog } from 'evergreen-ui';
 import HeaderNav from './components/HeaderNav';
 import Home from './components/Home';
 import CreateForm from './components/CreateForm';
@@ -19,6 +18,7 @@ function App() {
   const context = useWeb3Injected();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [contract, setContract] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [role, setRole] = useState('buyer');
   const ipfs = getIPFS();
 
@@ -35,6 +35,7 @@ function App() {
 
   const onSubmit = (data) => {
     console.log(data);
+    setLoading(true);
   }
 
   const onCTAClick = (role) => () => {
@@ -52,6 +53,7 @@ function App() {
       <CreateForm
         show={showCreateForm}
         role={role}
+        loading={loading}
         onRoleChange={setRole}
         onClose={() => setShowCreateForm(false)}
         onSubmit={onSubmit}
@@ -59,7 +61,10 @@ function App() {
       <Router>
         <Switch>
           <Route exact path="/">
-            <Home onBuyer={onCTAClick('buyer')} onSeller={onCTAClick('seller')} />
+            <Home
+              onBuyer={onCTAClick('buyer')}
+              onSeller={onCTAClick('seller')}
+            />
           </Route>
           <Route path="/view/:hash">
             <h3>View</h3>
