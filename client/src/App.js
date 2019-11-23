@@ -66,7 +66,7 @@ function App() {
     setShowCreateForm(true);
   }
 
-  if (!context.lib) {
+  if (!context.lib || !contract) {
     return <div>Loading Web3, accounts, and contract...</div>;
   }
 
@@ -90,7 +90,11 @@ function App() {
             />
           </Route>
           <Route path="/b/:hash">
-            <ViewForm />
+            <ViewForm
+              ipfs={ipfs}
+              contract={contract}
+              web3Context={context}
+            />
           </Route>
         </Switch>
       </Router>
