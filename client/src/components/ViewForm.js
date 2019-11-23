@@ -1,8 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Flex, Text, Form, Textarea, Button, Loader } from 'rimble-ui';
 import { useParams } from 'react-router-dom';
+import ProgressStep from './ProgressStep';
 
-const BetterPayJSON = require('../../../../contracts/BetterPay.sol');
+const BetterPayJSON = require('../../../contracts/BetterPay.sol');
+
+const steps = [
+  {
+    label: 'Offer Created',
+    completed: true,
+  },
+  {
+    label: 'Payment Confirmed',
+    completed: true
+  },
+  {
+    label: 'Seller Confirmed',
+    completed: false
+  },
+  {
+    label:'Buyer Confirmed',
+    completed: false
+  },
+  {
+    label: 'Offer Finalized',
+    completed: false
+  }
+]
 
 export default function ViewForm(props) {
   const { ipfs, web3Context } = props;
@@ -30,8 +54,9 @@ export default function ViewForm(props) {
   console.log(manifest, escrow);
 
   return (
-    <Flex flexDirection="column" margin={25} marginTop={75} alignItems="center">
+    <Flex flexDirection="column" padding={25} marginTop={75} alignItems="center" width="100%">
       <h1>{manifest.title}</h1>
+      <ProgressStep steps={steps} />
     </Flex>
   );
 }
