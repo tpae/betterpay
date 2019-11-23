@@ -47,6 +47,8 @@ export default function ViewForm(props) {
   const { hash } = useParams();
   const [manifest, setManifest] = useState(null);
   const [escrow, setEscrow] = useState(null);
+  const [contract, setContract] = useState(null);
+  const [loading, setLoading] = useState(false);
   const steps = escrow ? getSteps(escrow) : [];
   const status = escrow ? getStatus(steps) : null;
   const isSeller = escrow ? escrow.seller === web3Context.accounts[0] : false;
@@ -62,6 +64,7 @@ export default function ViewForm(props) {
         BetterPayJSON.abi,
         deployedNetwork && deployedNetwork.address,
       );
+      setContract(contract);
       setEscrow(await contract.methods.getEscrow(hash).call());
     }
     getManifest();
@@ -71,7 +74,27 @@ export default function ViewForm(props) {
     return <div>Loading...</div>;
   }
 
-  console.log(escrow);
+  const onSellerConfirm = () => {
+
+  };
+
+  const onBuyerConfirm = () => {
+
+  };
+
+  const onSendPayment = async () => {
+    setLoading(true);
+    const digestData = {
+      ...manifest,
+      timestamp: Math.round((new Date()).getTime() / 1000)
+    };
+    const digest = await ipfs.add(digestData);
+    await contract.methods.makePayment(hash, digest).send(
+      { from: web3Context.accounts[0], value: web3Context.lib.utils.toWei(manifest.price, "ether") }
+    );
+    alert('Success!');
+    setLoading(false);
+  };
 
   return (
     <Flex
@@ -82,8 +105,23 @@ export default function ViewForm(props) {
       width="100%"
     >
       <ProgressStep steps={steps} />
-      {isSeller && <SellerView status={status} manifest={manifest} />}
-      {isBuyer && <BuyerView status={status} manifest={manifest} />}
+      {isSeller && (
+        <SellerView
+          status={status}
+          manifest={manifest}
+          onSellerConfirm={onSellerConfirm}
+          loading={loading}
+        />
+      )}
+      {isBuyer && (
+        <BuyerView 
+          status={status} 
+          manifest={manifest}
+          onBuyerConfirm={onBuyerConfirm}
+          onSendPayment={onSendPayment}
+          loading={loading}
+        />
+      )}
     </Flex>
   );
 }
