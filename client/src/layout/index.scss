@@ -1,8 +1,14 @@
+@import '~@blueprintjs/core/lib/css/blueprint.css';
+@import '~@blueprintjs/icons/lib/css/blueprint-icons.css';
 @import './variables.scss';
 
 html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
+}
+
+html, body {
+  height: 100%;
 }
 
 body {
@@ -194,4 +200,8 @@ input {
   html {
     font-size: 100%;
   }
+}
+
+#root {
+  height: 100%;
 }

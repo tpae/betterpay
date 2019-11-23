@@ -5,7 +5,8 @@ import {
   Route,
 } from 'react-router-dom';
 import { useWeb3Injected } from '@openzeppelin/network/react';
-import BetterPay from './components/BetterPay';
+import HeaderNav from './components/HeaderNav';
+import Home from './components/Home';
 import getIPFS from './utils/ipfs';
 
 import styles from './App.module.scss';
@@ -34,10 +35,11 @@ function App() {
 
   return (
     <div className={styles.App}>
+      <HeaderNav web3Context={context} />
       <Router>
         <Switch>
           <Route exact path="/">
-            <BetterPay />
+            <Home />
           </Route>
           <Route path="/view/:hash">
             <h3>View</h3>
